@@ -10,9 +10,6 @@ This project implements a Kalman Filter using the **FilterPy library** to improv
 - **Estimating velocity** of moving targets
 - **Handling temporary occlusions** with prediction
 
-## Implementation
-
-Uses the robust, battle-tested **FilterPy** library - the standard Python Kalman filtering library. Following project guidelines: *"Do not hesitate to use existing libraries for your code (especially Kalman Filter)"*
 
 ## Project Structure
 
@@ -278,24 +275,6 @@ From synthetic tests with 5cm measurement noise:
 - Ensure timestamps are accurate
 - Check if dt is correct
 
-## Next Steps
-
-1. ✅ Review the code and understand the math
-2. ✅ Run `test_ekf.py` to see it work
-## Next Steps
-
-1. ✅ Review the code and understand the math
-2. ✅ Run `test_filterpy.py` to see FilterPy version work
-3. 📝 Collect static target data for R matrix
-## Next Steps
-
-1. ✅ Review the code and understand how FilterPy works
-2. ✅ Run `test_filterpy.py` to see results
-3. 📝 Collect static target data for R matrix calculation
-4. 📝 Integrate into your CV pipeline
-5. 📝 Tune Q and R matrices with real data
-6. 📝 Test on real robot videos
-7. 📝 Measure improvement in hit rate
 
 ## Resources
 
