@@ -308,10 +308,6 @@ From synthetic tests with 5cm measurement noise:
 ### Computer Vision
 - [OpenCV SolvePnP](https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html)
 
-## Why FilterPy?
-
-This implementation uses **FilterPy** following your project instructions:
-> "Do not hesitate to use existing libraries for your code (especially Kalman Filter)"
 
 Benefits:
 - ✅ Battle-tested in aerospace, robotics, finance
