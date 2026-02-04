@@ -325,5 +325,4 @@ Benefits:
 For educational use in Purdue RoboMaster VIP team.
 
 ## Author
-Hussein Hamouda
-Ahmed Elbehiry
+Hussein Hamouda, Ahmed Elbehiry
