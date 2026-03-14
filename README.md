@@ -302,6 +302,16 @@ From synthetic tests with 5cm measurement noise:
 - Check if dt is correct
 
 
+## Challenges
+
+One of the biggest things I struggled with was tuning the filter's noise matrices, Q and R. At first I did not really understand what values to use, and the filter was either too slow to react to the target's movement or it was too noisy and jumping around. I had to read more about what these matrices actually mean and then run a lot of tests with different values before I found something that worked reasonably well.
+
+Another challenge was the yaw angle wrapping. When the angle goes past 180 degrees or below -180 degrees it suddenly jumps to the other end of the range, and the filter treated this jump as a real fast movement. This caused the estimate to go completely wrong for a few frames. I fixed it by normalizing the angle every time before using it, but figuring out why the filter was misbehaving took some time.
+
+Working with the FilterPy library was also a learning curve. The documentation is okay but the way you have to pass the measurement function and its Jacobian as arguments to the update step was confusing at first. I kept getting dimension errors because I was not returning the right matrix sizes. I had to carefully go through examples online and check my matrix dimensions step by step.
+
+On the team side, coordinating with the detection side was sometimes difficult because we do not always have a real camera feed to test with. Most of our testing had to be done with synthetic data, which is fine for checking the math, but it is not the same as running on real hardware. We are working around this by building a good simulation pipeline and planning to test on real robot data as soon as the hardware is ready.
+
 ## Resources
 
 ### Kalman Filters
