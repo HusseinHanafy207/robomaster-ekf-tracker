@@ -228,7 +228,7 @@ def visualize_filterpy_results():
     
     plt.tight_layout()
     
-    output_path = r'c:\Uni\Purdue 2nd semester\VIP\robomaster-ekf-tracker\ekf_filterpy_results.png'
+    output_path = 'ekf_filterpy_results.png'
     plt.savefig(output_path, dpi=150)
     print(f"\nPlot saved to: {output_path}")
     

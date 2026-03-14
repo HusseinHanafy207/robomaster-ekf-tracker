@@ -234,7 +234,7 @@ class ArmorPlateEKF:
     def reset(self):
         """Reset the filter to uninitialized state."""
         self.kf.x = np.zeros(8)
-        self.s_initialized = False
+        self.is_initialized = False
         self.last_time = None
     
     @staticmethod
