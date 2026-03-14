@@ -183,7 +183,7 @@ def plot_uncertainty_ellipse(ekf, ax, n_std: float = 2.0, **kwargs):
     from matplotlib.patches import Ellipse
     
     pos, _, _ = ekf.get_state()
-    P = ekf.P[0:2, 0:2]  # X-Y covariance
+    P = ekf.kf.P[0:2, 0:2]  # X-Y covariance
     
     # Calculate eigenvalues and eigenvectors
     eigenvalues, eigenvectors = np.linalg.eig(P)
@@ -207,8 +207,8 @@ def save_ekf_parameters(ekf, filepath: str):
         filepath: Output file path
     """
     params = {
-        'Q': ekf.Q.tolist(),
-        'R': ekf.R.tolist(),
+        'Q': ekf.kf.Q.tolist(),
+        'R': ekf.kf.R.tolist(),
         'dt': ekf.dt
     }
     
@@ -229,8 +229,8 @@ def load_ekf_parameters(ekf, filepath: str):
     with open(filepath, 'r') as f:
         params = json.load(f)
     
-    ekf.Q = np.array(params['Q'])
-    ekf.R = np.array(params['R'])
+    ekf.kf.Q = np.array(params['Q'])
+    ekf.kf.R = np.array(params['R'])
     ekf.dt = params['dt']
     
     print(f"EKF parameters loaded from: {filepath}")
@@ -320,5 +320,5 @@ if __name__ == "__main__":
     print("\nImport this module to use these utilities in your code.")
     
     # Create a template file
-    template_path = r'c:\Uni\Purdue 2nd semester\VIP\robomaster-ekf-tracker\measurement_template.json'
+    template_path = 'measurement_template.json'
     create_measurement_json_template(template_path)

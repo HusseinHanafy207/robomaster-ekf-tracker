@@ -10,6 +10,26 @@ This project implements a Kalman Filter using the **FilterPy library** to improv
 - **Estimating velocity** of moving targets
 - **Handling temporary occlusions** with prediction
 
+## Implemented Features
+
+### Core Tasks
+1. **Extended Kalman Filter for pose smoothing** — Filters SolvePnP armor plate pose measurements (x, y, z, yaw) using the `ArmorPlateEKF` class.
+2. **8-state constant-velocity tracking model** — State vector `[x, y, z, vx, vy, vz, yaw, vyaw]` with a linear prediction step.
+3. **EKF test pipeline** — `test_filterpy.py` runs synthetic trajectory tests and reports RMSE improvement over raw measurements.
+4. **Evaluation outputs** — Plots comparing raw vs. filtered pose and demonstrating short-term position prediction using estimated velocity.
+
+### Additional Implemented Features
+5. **Simplified auto-tuned EKF variant** — `SimplifiedArmorEKF` class uses FilterPy's `Q_discrete_white_noise` helper to auto-generate the process noise matrix, making noise parameter tuning easier.
+6. **Adaptive timestep support** — `ArmorPlateEKF.update()` accepts optional timestamps and automatically computes a variable dt between measurements, accommodating non-uniform frame rates.
+7. **Yaw angle normalization** — Both `ArmorPlateEKF` and `SimplifiedArmorEKF` normalize yaw to the `[-π, π]` range in measurements and state to prevent angle-wrapping errors.
+8. **Measurement covariance estimation from real data** — `utils.calculate_measurement_covariance()` computes the R matrix from a JSON file of repeated static-target SolvePnP measurements.
+9. **EKF parameter persistence** — `utils.save_ekf_parameters()` and `utils.load_ekf_parameters()` save and restore tuned Q and R matrices to/from a JSON file.
+10. **State uncertainty reporting** — `ArmorPlateEKF.get_uncertainty()` returns per-state standard deviations derived from the covariance matrix P.
+11. **Uncertainty visualization** — `utils.plot_uncertainty_ellipse()` overlays a 2-σ ellipse on a trajectory plot; `utils.plot_covariance_evolution()` shows how position and velocity uncertainties converge over time.
+12. **Filter reset** — `ArmorPlateEKF.reset()` reinitializes the filter to an uninitialized state.
+13. **Runtime noise tuning** — `ArmorPlateEKF.set_process_noise()` and `set_measurement_noise()` allow updating Q and R after construction.
+14. **Measurement data collection template** — `utils.create_measurement_json_template()` generates a ready-to-fill JSON template for recording static-target measurements used to calibrate R.
+
 
 ## Project Structure
 
