@@ -12,7 +12,7 @@ This project implements a Kalman Filter using the **FilterPy library** to improv
 
 ## Implemented Features
 
-### Core Tasks
+### Primary Tasks
 1. **Extended Kalman Filter for pose smoothing** — Filters SolvePnP armor plate pose measurements (x, y, z, yaw) using the `ArmorPlateEKF` class.
 2. **8-state constant-velocity tracking model** — State vector `[x, y, z, vx, vy, vz, yaw, vyaw]` with a linear prediction step.
 3. **EKF test pipeline** — `test_filterpy.py` runs synthetic trajectory tests and reports RMSE improvement over raw measurements.
@@ -29,6 +29,12 @@ This project implements a Kalman Filter using the **FilterPy library** to improv
 12. **Filter reset** — `ArmorPlateEKF.reset()` reinitializes the filter to an uninitialized state.
 13. **Runtime noise tuning** — `ArmorPlateEKF.set_process_noise()` and `set_measurement_noise()` allow updating Q and R after construction.
 14. **Measurement data collection template** — `utils.create_measurement_json_template()` generates a ready-to-fill JSON template for recording static-target measurements used to calibrate R.
+15. **Synthetic trajectory generator** — `generate_synthetic_trajectory()` in `test_filterpy.py` produces a configurable circular-orbit ground truth with independently tunable Gaussian position noise and yaw noise, used by all test functions.
+16. **Comprehensive performance metrics** — `utils.analyze_filter_performance()` returns a dictionary containing raw RMSE, filtered RMSE, max errors, standard deviations, and improvement percentage, for a thorough quantitative evaluation of filter quality.
+17. **4-panel tracking comparison figure** — `utils.plot_tracking_comparison()` generates a single figure with trajectory top-view, position error over time, X/Y/Z component time series, and frame-to-frame jitter (smoothness), all in one call. Supports optional ground-truth overlay and file saving.
+18. **Side-by-side implementation comparison** — `compare_implementations()` in `test_filterpy.py` runs both a custom hand-rolled EKF (`ekf.py`, if present) and the FilterPy EKF on the same data and prints their RMSE side by side for validation and benchmarking.
+19. **Explicit filter initialization method** — `ArmorPlateEKF.initialize()` is a public method that seeds the state vector with the first measurement and an optional timestamp, enabling deliberate cold-start control separate from the automatic initialization that occurs inside `update()`.
+20. **Backwards-compatibility alias** — `ArmorPlateEKFLibrary` is a module-level alias for `ArmorPlateEKF` so that existing code importing the old name continues to work without modification.
 
 
 ## Project Structure
