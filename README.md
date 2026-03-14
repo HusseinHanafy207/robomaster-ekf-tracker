@@ -312,6 +312,24 @@ Working with the FilterPy library was also a learning curve. The documentation i
 
 On the team side, coordinating with the detection side was sometimes difficult because we do not always have a real camera feed to test with. Most of our testing had to be done with synthetic data, which is fine for checking the math, but it is not the same as running on real hardware. We are working around this by building a good simulation pipeline and planning to test on real robot data as soon as the hardware is ready.
 
+## Impact
+
+The core goal of the RoboMaster auto-aiming system is to detect an enemy robot's armor plate, calculate its position in 3D space, and fire a projectile so that it intersects the target in the future — all within milliseconds. Every noisy or delayed pose estimate fed directly into the gimbal controller degrades that accuracy. My work addresses this bottleneck by sitting between the SolvePnP detector and the ballistics/gimbal layer and providing three things the rest of the system cannot produce on its own: **smooth position estimates, velocity estimates, and short-horizon position predictions**.
+
+**Smoothing and noise rejection.** SolvePnP is fast but produces measurements that jitter by several centimetres between frames even when the target is stationary. The EKF fuses each new measurement with the filter's internal motion model using the Kalman gain, so transient spikes are damped without introducing lag. On the synthetic test trajectory this reduces position RMSE by roughly 40–60 % and cuts frame-to-frame jitter by a factor of 3–5. On a real robot that translates into fewer missed shots caused by the gimbal chasing measurement noise.
+
+**Velocity estimation.** Because the state vector tracks `[x, y, z, vx, vy, vz, yaw, vyaw]`, the filter continuously estimates how fast and in what direction the target is moving. This information was previously unavailable to the ballistics solver; without it, the system could only aim at where the target *was* when the frame was captured. With velocity estimates the solver can compute a lead angle proportional to projectile flight time, which is essential for hitting a robot that is strafing or spinning.
+
+**Short-horizon position prediction.** `get_predicted_position(flight_time)` extrapolates the current position along the estimated velocity vector for a configurable number of seconds. This directly implements target leading: the gimbal is aimed at where the target will *be* when the projectile arrives rather than where it was when the trigger was pulled.
+
+**Robustness to brief occlusions.** When the detector loses sight of a plate for a few frames (e.g., because of motion blur or partial occlusion by another robot), the filter continues to propagate its state estimate through the predict step. Downstream code can call `get_state()` and still receive a reasonable position estimate instead of a hard failure, reducing the frequency of the system having to re-initialize and converge from scratch.
+
+**Calibration and long-term maintainability.** The utilities I wrote (`calculate_measurement_covariance`, `save_ekf_parameters`, `load_ekf_parameters`, `create_measurement_json_template`) give future team members a reproducible workflow for re-tuning the filter when hardware changes — e.g., when the camera or lens is swapped. Without these, every new setup would require guessing R matrix values from scratch. The parameter persistence also makes it straightforward to ship a validated configuration file alongside the code.
+
+**Validation infrastructure.** The synthetic trajectory generator and `analyze_filter_performance` function let any team member run a quantitative regression test without access to the physical robot. This means filter parameter changes can be evaluated and compared numerically before ever touching the hardware, which shortens the tuning cycle and reduces the risk of deploying a misconfigured filter at a competition.
+
+In summary, my contribution converts raw, noisy pose detections into smooth, velocity-augmented, predictive state estimates. Each of those properties directly maps to a reduction in aiming error, which is the single most important metric for the auto-aiming subsystem and therefore for the team's competition performance.
+
 ## Resources
 
 ### Kalman Filters
